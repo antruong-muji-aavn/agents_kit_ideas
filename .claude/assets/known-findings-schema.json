@@ -1,0 +1,126 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "epost Known Accessibility Findings",
+  "description": "Schema for tracking multi-platform accessibility violations. Place as .epost-data/a11y/known-findings.json in project root.",
+  "type": "object",
+  "required": ["version", "audit_date", "critical_findings"],
+  "properties": {
+    "version": {
+      "type": "string",
+      "description": "Schema version",
+      "enum": ["1.0", "1.1", "1.2", "1.3"]
+    },
+    "audit_date": {
+      "type": "string",
+      "format": "date",
+      "description": "Date of last audit (YYYY-MM-DD)"
+    },
+    "last_reviewed_date": {
+      "type": "string",
+      "format": "date",
+      "description": "Date when findings list was last curated (YYYY-MM-DD)"
+    },
+    "critical_findings": {
+      "type": "array",
+      "description": "List of accessibility violations",
+      "items": {
+        "type": "object",
+        "required": ["id", "wcag", "title", "screen", "description", "file_pattern", "code_pattern", "fix_template", "priority", "estimated_effort_minutes"],
+        "properties": {
+          "id": {
+            "type": "integer",
+            "description": "Unique finding identifier"
+          },
+          "platform": {
+            "type": "string",
+            "enum": ["ios", "android", "web"],
+            "default": "ios",
+            "description": "Target platform for this finding"
+          },
+          "wcag": {
+            "type": "string",
+            "description": "WCAG 2.1 success criterion (e.g., '1.1.1', '2.1.1', '4.1.2')"
+          },
+          "title": {
+            "type": "string",
+            "description": "Feature area or screen name"
+          },
+          "screen": {
+            "type": "string",
+            "description": "Navigation path to the affected screen"
+          },
+          "description": {
+            "type": "string",
+            "description": "Detailed description of the accessibility issue"
+          },
+          "file_pattern": {
+            "type": "string",
+            "description": "Glob pattern to locate affected file (e.g., '*ViewController*')"
+          },
+          "code_pattern": {
+            "type": ["string", "null"],
+            "description": "Regex pattern to locate problematic code, or null if not narrowable"
+          },
+          "fix_template": {
+            "type": "string",
+            "enum": [
+              "add_button_label", "make_image_decorative", "add_heading_trait", "add_form_label", "add_modal_focus_trap", "add_status_announcement",
+              "add_content_description", "make_decorative", "add_touch_target", "add_heading_semantic", "add_state_description",
+              "add_alt_text", "add_aria_label", "add_heading_level", "add_focus_visible",
+              "other_manual"
+            ],
+            "description": "Predefined fix template to apply"
+          },
+          "priority": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 3,
+            "description": "Priority level (1=critical, 2=important, 3=minor)"
+          },
+          "estimated_effort_minutes": {
+            "type": "integer",
+            "description": "Estimated time to fix in minutes"
+          },
+          "resolved": {
+            "type": "boolean",
+            "default": false,
+            "description": "Whether this finding has been fixed and verified"
+          },
+          "resolved_date": {
+            "type": ["string", "null"],
+            "format": "date",
+            "description": "Date when finding was resolved (YYYY-MM-DD), null if unresolved"
+          },
+          "fix_applied": {
+            "type": "boolean",
+            "default": false,
+            "description": "Whether a fix has been applied (pending human verification via audit-close)"
+          },
+          "fix_applied_date": {
+            "type": ["string", "null"],
+            "format": "date",
+            "description": "Date when fix was applied (YYYY-MM-DD), null if not yet fixed"
+          },
+          "source": {
+            "type": "string",
+            "enum": ["audit", "review", "manual"],
+            "default": "manual",
+            "description": "How this finding was discovered"
+          },
+          "source_agent": {
+            "type": "string",
+            "description": "Agent that detected this finding (e.g. epost-a11y-specialist, epost-code-reviewer)"
+          },
+          "source_report": {
+            "type": ["string", "null"],
+            "description": "Relative path to the report file that recorded this finding (e.g. reports/260308-2249-smart-letter-a11y-audit.md)"
+          },
+          "first_detected_at": {
+            "type": ["string", "null"],
+            "description": "ISO 8601 datetime when finding was first detected (YYYY-MM-DDTHH:MM)"
+          }
+        }
+      }
+    }
+  }
+}
